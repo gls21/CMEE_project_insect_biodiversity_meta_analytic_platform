@@ -17,25 +17,26 @@ When new meta-analyses are conducted, the data can be uploaded to the app and in
 * Throughout the project, have also completed tutorials on SQL, metafor, making R packages, R markdown, and attended NHM workshops focusing on reading literature and writing. 
 
 #### Directories/Scripts
-* christina_mma:
-  * bayesian_analysis - replicating Christina's approach to modelling the data with Bayesian models (not used in the Shiny app)
-  * christina_main_initial_data_files - Christina's data files for her meta-meta-analysis
-  * dummy_data - making dummy data to practise uploading to the Shiny app
-  * meta_meta_analysis - the Shiny app files (global.R, ui.R, server.R, etc.)
-  * output_files - files created when replicating Christina's meta-meta-analysis 
-  * relevant_analysis - condensed version of replicating Christina's scripts that are relevant to the Shiny app
-  * replicating_christina_analysis - replicating Christina's scripts that are relevant to the Shiny app
-  * robust_analysis - replicating Christina's approach to modelling the data with robust models (used in the Shiny app)
-* datasets - examples of completed meta-analyses
-* essays - essays on insect declines and meta-analyses
-* glitrs_presentation - presentation completed quite early on in the process of makling the app to get expert opinion on how to improve it and discuss its use
+* christina_mma (note data is not publicly available so not included here):
+    * bayesian_analysis - replicating Christina's approach to modelling the data with Bayesian models (not used in the Shiny app)
+    * dummy_data - making dummy data to practise uploading to the Shiny app
+    * meta_meta_analysis - the insect biodiversity meta-analytic Shiny app (global.R, ui.R, server.R, etc.)
+    * relevant_analysis - condensed version of replicating Christina's scripts that are relevant to the Shiny app
+    * replicating_christina_analysis - replicating Christina's scripts that are relevant to the Shiny app
+    * robust_analysis - replicating Christina's approach to modelling the data with robust models (used in the Shiny app)
+    * testing_efficiency - quantitative data collected and code run to assess the effectiveness of the Shiny app. Also contains qualitative data collected for user experience testing
+* essays - essays on insect declines and meta-analyses completed at start of project
+* glitrs_presentation - presentation completed quite early on in the process of making the app to get expert opinion on how to improve it and discuss its use
 * literature_reviews - notes on the reading I have done on insect declines, meta-analysis, and papers describing tools with similarities to the Shiny app
-* meeting_notes 
-* papers - stored pdfs of papers I have read
+* mini_presentation_to_lab_group - short presentation to lab group to help with narrative of thesis
 * project_proposal
 * project_report
+    * The word version can be found in all/all_v3_grace_skinner.docx
+    * The LaTeX version can be found in project_report_natbib.tex
+    * project_report_bibliography_edited.bib contains bibliography entries used for LaTeX
+    * images_and_figures contains figures used in report
 * tutorials - Shiny apps, metafor, making R packages, SQL, R markdown, dplyr, and tidyverse style guide 
-* project_activities_record.docx
+* project_activities_record.docx - log of what I did each day during the project
 
 #### Languages
 * R version 4.2.0
