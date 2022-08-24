@@ -31,8 +31,8 @@ When new meta-analyses are conducted, the data can be uploaded to the app and in
 * mini_presentation_to_lab_group - short presentation to lab group to help with narrative of thesis
 * project_proposal
 * project_report
-    * The word version can be found in all/all_v3_grace_skinner.docx
-    * The LaTeX version can be found in project_report_natbib.tex
+    * The word pdf version can be found in all/grace_skinner_cmee_project_report.pdf
+    * The LaTeX pdf version can be found in grace_skinner_cmee_project_report_latex.pdf, and the LaTeX source code in project_report_natbib.tex
     * project_report_bibliography_edited.bib contains bibliography entries used for LaTeX
     * images_and_figures contains figures used in report
 * tutorials - Shiny apps, metafor, making R packages, SQL, R markdown, dplyr, and tidyverse style guide 
