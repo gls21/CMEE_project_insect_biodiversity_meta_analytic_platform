@@ -1,0 +1,494 @@
+---
+title: "tidyverse style guide tutorial"
+author: "Grace Skinner"
+date: "19/May/2022"
+output:
+  html_document: default
+---
+
+[Tidyverse Style Guide Website](https://style.tidyverse.org/)
+
+<br>
+
+# Intro
+* Style guide provides consistency, making code easier to write because you need to make fewer decisions
+* Have installed styler add-in, which allows you to restyle selected text/files/projects
+
+<br>
+
+# Files
+
+<br>
+
+### Names
+* Meaningful
+* End in .R
+* Stick to numbers, letter, and _ (don't use special characters)
+* If files should be run in a particular order, prefix them with numbers. 
+    * If it seems likely you’ll have more than 10 files, left pad with zero
+    * Later on, if missed some files, just rename all, rather than using 2a, 2b etc.
+* File names that are all lower case are best due to differences between operating systems
+
+<br>
+
+### Internal structure
+* Use commented lines of - and = to break up your file into easily readable chunks.
+* If your script uses add-on packages, load them all at once at the very beginning of the file. This is more transparent than sprinkling library() calls throughout your code
+
+```{r}
+# Load data ---------------------------------------------------------------
+```
+
+<br>
+
+# Syntax
+
+<br>
+
+### Object names
+* Variable and function names should use only lowercase letters, numbers, and _. Use underscores (so called snake case) to separate words within a name.
+* Generally, variable names should be nouns and function names should be verbs. Strive for names that are concise and meaningful (this is not easy!).
+
+<br>
+
+### Spacing
+* Always put a space after a comma, never before, just like in regular English.
+* Do not put spaces inside or outside parentheses for regular function calls.
+* Place a space before and after () when used with if, for, or while.
+* Place a space after () used for function arguments
+* The embracing operator, {{ }}, should always have inner spaces to help emphasise its special behaviour
+* Most infix operators (==, +, -, <-, etc.) should always be surrounded by spaces
+    * There are a few exceptions, which should never be surrounded by spaces:
+    * The operators with high precedence: ::, :::, $, @, [, [[, ^, unary -, unary +, and :.
+
+<br>
+
+### Commas 
+**Good**
+```{r}
+# x[, 1]
+```
+
+**Bad**
+
+```{r}
+# x[,1]
+# x[ ,1]
+# x[ , 1]
+```
+
+<br>
+
+### Parentheses
+**Good**
+```{r}
+# mean(x, na.rm = TRUE)
+```
+
+**Bad**
+```{r}
+# mean (x, na.rm = TRUE)
+# mean( x, na.rm = TRUE )
+```
+
+**Good**
+```{r}
+# if (debug) {
+#   show(x)
+# }
+```
+
+**Bad**
+```{r}
+# if(debug){
+#   show(x)
+# }
+```
+
+**Good**
+```{r}
+# function(x) {}
+```
+
+**Bad**
+```{r}
+# function (x) {}
+# function(x){}
+```
+
+<br>
+
+### Embracing operator
+**Good**
+```{r}
+# max_by <- function(data, var, by) {
+#   data %>%
+#     group_by({{ by }}) %>%
+#     summarise(maximum = max({{ var }}, na.rm = TRUE))
+# }
+```
+
+**Bad**
+```{r}
+# max_by <- function(data, var, by) {
+#   data %>%
+#     group_by({{by}}) %>%
+#     summarise(maximum = max({{var}}, na.rm = TRUE))
+# }
+```
+
+<br>
+
+### Infix operators 
+**Good**
+```{r}
+# height <- (feet * 12) + inches
+# mean(x, na.rm = TRUE)
+```
+
+**Bad**
+```{r}
+# height<-feet*12+inches
+# mean(x, na.rm=TRUE)
+```
+
+**Good**
+```{r}
+# sqrt(x^2 + y^2)
+# df$z
+# x <- 1:10
+```
+
+**Bad**
+```{r}
+# sqrt(x ^ 2 + y ^ 2)
+# df $ z
+# x <- 1 : 10
+```
+
+<br>
+
+### Function calls
+* When you call a function, you typically omit the names of data arguments, because they are used so commonly. 
+* If you override the default value of an argument, use the full name
+* Avoid assignment in function calls
+
+**Good**
+```{r}
+# mean(1:10, na.rm = TRUE)
+```
+
+**Bad**
+```{r}
+# mean(x = 1:10, , FALSE)
+# mean(, TRUE, x = c(1:10, NA))
+```
+
+<br>
+
+### Control flow
+* Curly braces, {}, define the most important hierarchy of R code. To make this hierarchy easy to see:
+    * { should be the last character on the line. Related code (e.g., an if clause, a function declaration, a trailing comma, …) must be on the same line as the opening brace.
+    * The contents should be indented by two spaces.
+    * } should be the first character on the line.
+* If used, else should be on the same line as }.
+
+**Good**
+```{r}
+# if (y < 0 && debug) {
+#   message("y is negative")
+# }
+```
+
+**Bad**
+```{r}
+# if (y < 0 && debug) {
+# message("Y is negative")
+# }
+# 
+# if (y == 0)
+# {
+#     if (x > 0) {
+#       log(x)
+#     } else {
+#   message("x is negative or zero")
+#     }
+# } else { y ^ x }
+```
+
+<br>
+
+### Long lines
+* Strive to limit your code to 80 characters per line. This fits comfortably on a printed page with a reasonably sized font. If you find yourself running out of room, this is a good indication that you should encapsulate some of the work in a separate function.
+
+<br>
+
+### Semi-colons
+* Don’t put ; at the end of a line, and don’t use ; to put multiple commands on one line.
+
+<br>
+
+### Assignment
+* Use <-, not =, for assignment.
+
+<br>
+
+### Data
+* Use ", not ', for quoting text. 
+* The only exception is when the text already contains double quotes and no single quotes.
+
+**Good**
+```{r}
+# "Text"
+# 'Text with "quotes"'
+# '<a href="http://style.tidyverse.org">A link</a>'
+```
+
+**Bad**
+```{r}
+# 'Text'
+# 'Text with "double" and \'single\' quotes'
+```
+
+<br>
+
+### Logical vectors
+* Prefer TRUE and FALSE over T and F.
+
+<br>
+
+### Comments
+* Each line of a comment should begin with the comment symbol and a single space: # 
+* If you discover that you have more comments than code, consider switching to R Markdown.
+
+<br>
+
+# Functions
+
+<br>
+
+### Naming
+* Strive to use verbs for function names
+
+<br>
+
+### Long lines
+* Function-indent: place each argument on its own line, and indent to match the opening ( of function:
+```{r}
+# long_function_name <- function(a = "a long argument",
+#                                b = "another argument",
+#                                c = "another long argument") {
+#   # As usual code is indented by two spaces.
+# }
+```
+
+* OR Double-indent: Place each argument of its own double indented line.
+```{r}
+# long_function_name <- function(
+#     a = "a long argument",
+#     b = "another argument",
+#     c = "another long argument") {
+#   # As usual code is indented by two spaces.
+# }
+```
+
+* Function indent is preferred when it fits
+
+### return()
+* Only use return() for early returns. 
+* ?!?! Otherwise, rely on R to return the result of the last evaluated expression. ?!?!
+* Return statements should always be on their own line 
+
+**Good**
+```{r}
+# find_abs <- function(x) {
+#   if (x > 0) {
+#     return(x)
+#   }
+#   x * -1
+# }
+# 
+# add_two <- function(x, y) {
+#   x + y
+# }
+```
+
+**Bad**
+```{r}
+# add_two <- function(x, y) {
+#   return(x + y)
+# }
+```
+
+<br>
+
+### Comments
+* Use comments to explain the “why” not the “what” or “how”. 
+* Each line of a comment should begin with the comment symbol and a single space: # .
+* Comments should be in sentence case, and only end with a full stop if they contain at least two sentences
+
+<br>
+
+# Pipes
+* %>% should always have a space before it, and should usually be followed by a new line. After the first step, each line should be indented by two spaces
+
+**Good**
+```{r}
+# iris %>%
+#   group_by(Species) %>%
+#   summarize_if(is.numeric, mean) %>%
+#   ungroup() %>%
+#   gather(measure, value, -Species) %>%
+#   arrange(value)
+```
+
+**Bad**
+```{r}
+# iris %>% group_by(Species) %>% summarize_all(mean) %>%
+# ungroup %>% gather(measure, value, -Species) %>%
+# arrange(value)
+
+```
+
+* If the arguments to a function don’t all fit on one line, put each argument on its own line and indent
+```{r}
+# iris %>%
+#   group_by(Species) %>%
+#   summarise(
+#     Sepal.Length = mean(Sepal.Length),
+#     Sepal.Width = mean(Sepal.Width),
+#     Species = n_distinct(Species)
+#   )
+```
+
+* Assignment - a few alternative options but I like this one best:
+```{r}
+# iris_long <- iris %>%
+#   gather(measure, value, -Species) %>%
+#   arrange(-value)
+```
+
+<br>
+
+# ggplot2
+* '+' should always have a space before it, and should be followed by a new line. This is true even if your plot has only two layers. After the first step, each line should be indented by two spaces.
+* If you are creating a ggplot off of a dplyr pipeline, there should only be one level of indentation.
+
+**Good**
+```{r}
+# iris %>%
+#   filter(Species == "setosa") %>%
+#   ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
+#   geom_point()
+```
+
+**Bad**
+```{r}
+# iris %>%
+#   filter(Species == "setosa") %>%
+#   ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
+#     geom_point()
+```
+
+**Bad**
+```{r}
+# iris %>%
+#   filter(Species == "setosa") %>%
+#   ggplot(aes(x = Sepal.Width, y = Sepal.Length)) + geom_point()
+```
+
+* If the arguments to a ggplot2 layer don’t all fit on one line, put each argument on its own line and indent
+
+**Good**
+```{r}
+# ggplot(aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
+#   geom_point() +
+#   labs(
+#     x = "Sepal width, in cm",
+#     y = "Sepal length, in cm",
+#     title = "Sepal length vs. width of irises"
+#   ) 
+```
+
+**Bad**
+```{r}
+# ggplot(aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
+#   geom_point() +
+#   labs(x = "Sepal width, in cm", y = "Sepal length, in cm", title = "Sepal length vs. width of irises") 
+```
+
+* ggplot2 allows you to do data manipulation, such as filtering or slicing, within the data argument. Avoid this, and instead do the data manipulation in a pipeline before starting plotting.
+
+<br>
+
+# Making packages
+
+<br> 
+
+### Files
+* If a file contains a single function, give the file the same name as the function.
+* If a file contains multiple related functions, give it a concise, but evocative name.
+
+<br>
+
+### Documentation 
+* Use the first line of your function documentation to provide a concise title that describes the function, dataset, or class. Titles should use sentence case but not end with a full stop
+* Always indent with one space after #'
+* For most tags, like @param, @seealso and @return, the text should be a sentence, starting with a capital letter and ending with a full stop
+
+### Error messages
+* If the cause of the problem is clear, use “must” - clear cut causes typically involve incorrect types or lengths.
+* If you cannot state what was expected, use “can’t”
+* The problem statement should use sentence case and end with a full stop.
+* Use simple sentences layed out in a bullet list of ℹ and ✖ elements
+* Do your best to reveal the location, name, and/or content of the troublesome component
+* If the list of issues might be long, make sure to truncate to only show the first few
+* If the source of the error is clear and common, you may want to provide a hint as to how to fix it. If UTF-8 is available, prefix with ℹ. Hints should always end in a question mark.
+```{r}
+# dplyr::filter(iris, Species = "setosa")
+# #> Error: Filter specifications must be named.
+# #> ℹ Did you mean `Species == "setosa"`?
+# 
+# ggplot2::ggplot(ggplot2::aes())
+# #> Error: Can't plot data with class "uneval". 
+# #> ℹ Did you accidentally provide the results of aes() to the `data` argument?
+```
+* Good hints are difficult to write because, as above, you want to avoid steering users in the wrong direction. Generally, I avoid writing a hint unless the problem is common, and you can easily find a common pattern of incorrect usage
+* Errors should be written in sentence case, and should end in a full stop
+* If you can detect multiple problems, list up to five. This allows the user to fix multiple problems in a single pass without being overwhelmed by many errors that may have the same source
+
+### News
+* Each user-facing change to a package should be accompanied by a bullet in NEWS.md
+* Strive to place the name of the function as close to the beginning of the bullet as possible
+
+**Good**
+```{r}
+# * `ggsave()` now uses full argument names to avoid partial match warning (#2355).
+```
+
+**Bad**
+```{r}
+# * Fixed partial argument matches in `ggsave()` (#2355).
+```
+* Lines should be wrapped to 80 characters, and each bullet should end in a full stop.#
+* Frame bullets positively (i.e. what now happens, not what used to happen), and use the present tense.
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,931 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={tidyverse style guide tutorial},
+  pdfauthor={Grace Skinner},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{tidyverse style guide tutorial}
+\author{Grace Skinner}
+\date{19/May/2022}
+
+\begin{document}
+\maketitle
+
+\href{https://style.tidyverse.org/}{Tidyverse Style Guide Website}
+
+\hypertarget{intro}{%
+\section{Intro}\label{intro}}
+
+\begin{itemize}
+\tightlist
+\item
+  Style guide provides consistency, making code easier to write because
+  you need to make fewer decisions
+\item
+  Have installed styler add-in, which allows you to restyle selected
+  text/files/projects
+\end{itemize}
+
+\hypertarget{files}{%
+\section{Files}\label{files}}
+
+\hypertarget{names}{%
+\subsubsection{Names}\label{names}}
+
+\begin{itemize}
+\tightlist
+\item
+  Meaningful
+\item
+  End in .R
+\item
+  Stick to numbers, letter, and \_ (don't use special characters)
+\item
+  If files should be run in a particular order, prefix them with
+  numbers.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    If it seems likely you'll have more than 10 files, left pad with
+    zero
+  \item
+    Later on, if missed some files, just rename all, rather than using
+    2a, 2b etc.
+  \end{itemize}
+\item
+  File names that are all lower case are best due to differences between
+  operating systems
+\end{itemize}
+
+\hypertarget{internal-structure}{%
+\subsubsection{Internal structure}\label{internal-structure}}
+
+\begin{itemize}
+\tightlist
+\item
+  Use commented lines of - and = to break up your file into easily
+  readable chunks.
+\item
+  If your script uses add-on packages, load them all at once at the very
+  beginning of the file. This is more transparent than sprinkling
+  library() calls throughout your code
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Load data ---------------------------------------------------------------}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{syntax}{%
+\section{Syntax}\label{syntax}}
+
+\hypertarget{object-names}{%
+\subsubsection{Object names}\label{object-names}}
+
+\begin{itemize}
+\tightlist
+\item
+  Variable and function names should use only lowercase letters,
+  numbers, and \_. Use underscores (so called snake case) to separate
+  words within a name.
+\item
+  Generally, variable names should be nouns and function names should be
+  verbs. Strive for names that are concise and meaningful (this is not
+  easy!).
+\end{itemize}
+
+\hypertarget{spacing}{%
+\subsubsection{Spacing}\label{spacing}}
+
+\begin{itemize}
+\tightlist
+\item
+  Always put a space after a comma, never before, just like in regular
+  English.
+\item
+  Do not put spaces inside or outside parentheses for regular function
+  calls.
+\item
+  Place a space before and after () when used with if, for, or while.
+\item
+  Place a space after () used for function arguments
+\item
+  The embracing operator, \{\{ \}\}, should always have inner spaces to
+  help emphasise its special behaviour
+\item
+  Most infix operators (==, +, -, \textless-, etc.) should always be
+  surrounded by spaces
+
+  \begin{itemize}
+  \tightlist
+  \item
+    There are a few exceptions, which should never be surrounded by
+    spaces:
+  \item
+    The operators with high precedence: ::, :::, \$, @, {[}, {[}{[},
+    \^{}, unary -, unary +, and :.
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{commas}{%
+\subsubsection{Commas}\label{commas}}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# x[, 1]}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# x[,1]}
+\CommentTok{# x[ ,1]}
+\CommentTok{# x[ , 1]}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{parentheses}{%
+\subsubsection{Parentheses}\label{parentheses}}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# mean(x, na.rm = TRUE)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# mean (x, na.rm = TRUE)}
+\CommentTok{# mean( x, na.rm = TRUE )}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# if (debug) \{}
+\CommentTok{#   show(x)}
+\CommentTok{# \}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# if(debug)\{}
+\CommentTok{#   show(x)}
+\CommentTok{# \}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# function(x) \{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# function (x) \{\}}
+\CommentTok{# function(x)\{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{embracing-operator}{%
+\subsubsection{Embracing operator}\label{embracing-operator}}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# max_by <- function(data, var, by) \{}
+\CommentTok{#   data %>%}
+\CommentTok{#     group_by(\{\{ by \}\}) %>%}
+\CommentTok{#     summarise(maximum = max(\{\{ var \}\}, na.rm = TRUE))}
+\CommentTok{# \}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# max_by <- function(data, var, by) \{}
+\CommentTok{#   data %>%}
+\CommentTok{#     group_by(\{\{by\}\}) %>%}
+\CommentTok{#     summarise(maximum = max(\{\{var\}\}, na.rm = TRUE))}
+\CommentTok{# \}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{infix-operators}{%
+\subsubsection{Infix operators}\label{infix-operators}}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# height <- (feet * 12) + inches}
+\CommentTok{# mean(x, na.rm = TRUE)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# height<-feet*12+inches}
+\CommentTok{# mean(x, na.rm=TRUE)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# sqrt(x^2 + y^2)}
+\CommentTok{# df$z}
+\CommentTok{# x <- 1:10}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# sqrt(x ^ 2 + y ^ 2)}
+\CommentTok{# df $ z}
+\CommentTok{# x <- 1 : 10}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{function-calls}{%
+\subsubsection{Function calls}\label{function-calls}}
+
+\begin{itemize}
+\tightlist
+\item
+  When you call a function, you typically omit the names of data
+  arguments, because they are used so commonly.
+\item
+  If you override the default value of an argument, use the full name
+\item
+  Avoid assignment in function calls
+\end{itemize}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# mean(1:10, na.rm = TRUE)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# mean(x = 1:10, , FALSE)}
+\CommentTok{# mean(, TRUE, x = c(1:10, NA))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{control-flow}{%
+\subsubsection{Control flow}\label{control-flow}}
+
+\begin{itemize}
+\tightlist
+\item
+  Curly braces, \{\}, define the most important hierarchy of R code. To
+  make this hierarchy easy to see:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \{ should be the last character on the line. Related code (e.g., an
+    if clause, a function declaration, a trailing comma, \ldots) must be
+    on the same line as the opening brace.
+  \item
+    The contents should be indented by two spaces.
+  \item
+    \} should be the first character on the line.
+  \end{itemize}
+\item
+  If used, else should be on the same line as \}.
+\end{itemize}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# if (y < 0 && debug) \{}
+\CommentTok{#   message("y is negative")}
+\CommentTok{# \}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# if (y < 0 && debug) \{}
+\CommentTok{# message("Y is negative")}
+\CommentTok{# \}}
+\CommentTok{# }
+\CommentTok{# if (y == 0)}
+\CommentTok{# \{}
+\CommentTok{#     if (x > 0) \{}
+\CommentTok{#       log(x)}
+\CommentTok{#     \} else \{}
+\CommentTok{#   message("x is negative or zero")}
+\CommentTok{#     \}}
+\CommentTok{# \} else \{ y ^ x \}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{long-lines}{%
+\subsubsection{Long lines}\label{long-lines}}
+
+\begin{itemize}
+\tightlist
+\item
+  Strive to limit your code to 80 characters per line. This fits
+  comfortably on a printed page with a reasonably sized font. If you
+  find yourself running out of room, this is a good indication that you
+  should encapsulate some of the work in a separate function.
+\end{itemize}
+
+\hypertarget{semi-colons}{%
+\subsubsection{Semi-colons}\label{semi-colons}}
+
+\begin{itemize}
+\tightlist
+\item
+  Don't put ; at the end of a line, and don't use ; to put multiple
+  commands on one line.
+\end{itemize}
+
+\hypertarget{assignment}{%
+\subsubsection{Assignment}\label{assignment}}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \textless-, not =, for assignment.
+\end{itemize}
+
+\hypertarget{data}{%
+\subsubsection{Data}\label{data}}
+
+\begin{itemize}
+\tightlist
+\item
+  Use ", not ', for quoting text.
+\item
+  The only exception is when the text already contains double quotes and
+  no single quotes.
+\end{itemize}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# "Text"}
+\CommentTok{# 'Text with "quotes"'}
+\CommentTok{# '<a href="http://style.tidyverse.org">A link</a>'}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# 'Text'}
+\CommentTok{# 'Text with "double" and \textbackslash{}'single\textbackslash{}' quotes'}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{logical-vectors}{%
+\subsubsection{Logical vectors}\label{logical-vectors}}
+
+\begin{itemize}
+\tightlist
+\item
+  Prefer TRUE and FALSE over T and F.
+\end{itemize}
+
+\hypertarget{comments}{%
+\subsubsection{Comments}\label{comments}}
+
+\begin{itemize}
+\tightlist
+\item
+  Each line of a comment should begin with the comment symbol and a
+  single space: \#
+\item
+  If you discover that you have more comments than code, consider
+  switching to R Markdown.
+\end{itemize}
+
+\hypertarget{functions}{%
+\section{Functions}\label{functions}}
+
+\hypertarget{naming}{%
+\subsubsection{Naming}\label{naming}}
+
+\begin{itemize}
+\tightlist
+\item
+  Strive to use verbs for function names
+\end{itemize}
+
+\hypertarget{long-lines-1}{%
+\subsubsection{Long lines}\label{long-lines-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  Function-indent: place each argument on its own line, and indent to
+  match the opening ( of function:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# long_function_name <- function(a = "a long argument",}
+\CommentTok{#                                b = "another argument",}
+\CommentTok{#                                c = "another long argument") \{}
+\CommentTok{#   # As usual code is indented by two spaces.}
+\CommentTok{# \}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  OR Double-indent: Place each argument of its own double indented line.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# long_function_name <- function(}
+\CommentTok{#     a = "a long argument",}
+\CommentTok{#     b = "another argument",}
+\CommentTok{#     c = "another long argument") \{}
+\CommentTok{#   # As usual code is indented by two spaces.}
+\CommentTok{# \}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Function indent is preferred when it fits
+\end{itemize}
+
+\hypertarget{return}{%
+\subsubsection{return()}\label{return}}
+
+\begin{itemize}
+\tightlist
+\item
+  Only use return() for early returns.
+\item
+  ?!?! Otherwise, rely on R to return the result of the last evaluated
+  expression. ?!?!
+\item
+  Return statements should always be on their own line
+\end{itemize}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# find_abs <- function(x) \{}
+\CommentTok{#   if (x > 0) \{}
+\CommentTok{#     return(x)}
+\CommentTok{#   \}}
+\CommentTok{#   x * -1}
+\CommentTok{# \}}
+\CommentTok{# }
+\CommentTok{# add_two <- function(x, y) \{}
+\CommentTok{#   x + y}
+\CommentTok{# \}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add_two <- function(x, y) \{}
+\CommentTok{#   return(x + y)}
+\CommentTok{# \}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{comments-1}{%
+\subsubsection{Comments}\label{comments-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  Use comments to explain the ``why'' not the ``what'' or ``how''.
+\item
+  Each line of a comment should begin with the comment symbol and a
+  single space: \# .
+\item
+  Comments should be in sentence case, and only end with a full stop if
+  they contain at least two sentences
+\end{itemize}
+
+\hypertarget{pipes}{%
+\section{Pipes}\label{pipes}}
+
+\begin{itemize}
+\tightlist
+\item
+  \%\textgreater\% should always have a space before it, and should
+  usually be followed by a new line. After the first step, each line
+  should be indented by two spaces
+\end{itemize}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# iris %>%}
+\CommentTok{#   group_by(Species) %>%}
+\CommentTok{#   summarize_if(is.numeric, mean) %>%}
+\CommentTok{#   ungroup() %>%}
+\CommentTok{#   gather(measure, value, -Species) %>%}
+\CommentTok{#   arrange(value)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# iris %>% group_by(Species) %>% summarize_all(mean) %>%}
+\CommentTok{# ungroup %>% gather(measure, value, -Species) %>%}
+\CommentTok{# arrange(value)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  If the arguments to a function don't all fit on one line, put each
+  argument on its own line and indent
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# iris %>%}
+\CommentTok{#   group_by(Species) %>%}
+\CommentTok{#   summarise(}
+\CommentTok{#     Sepal.Length = mean(Sepal.Length),}
+\CommentTok{#     Sepal.Width = mean(Sepal.Width),}
+\CommentTok{#     Species = n_distinct(Species)}
+\CommentTok{#   )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Assignment - a few alternative options but I like this one best:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# iris_long <- iris %>%}
+\CommentTok{#   gather(measure, value, -Species) %>%}
+\CommentTok{#   arrange(-value)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ggplot2}{%
+\section{ggplot2}\label{ggplot2}}
+
+\begin{itemize}
+\tightlist
+\item
+  `+' should always have a space before it, and should be followed by a
+  new line. This is true even if your plot has only two layers. After
+  the first step, each line should be indented by two spaces.
+\item
+  If you are creating a ggplot off of a dplyr pipeline, there should
+  only be one level of indentation.
+\end{itemize}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# iris %>%}
+\CommentTok{#   filter(Species == "setosa") %>%}
+\CommentTok{#   ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +}
+\CommentTok{#   geom_point()}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# iris %>%}
+\CommentTok{#   filter(Species == "setosa") %>%}
+\CommentTok{#   ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +}
+\CommentTok{#     geom_point()}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# iris %>%}
+\CommentTok{#   filter(Species == "setosa") %>%}
+\CommentTok{#   ggplot(aes(x = Sepal.Width, y = Sepal.Length)) + geom_point()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  If the arguments to a ggplot2 layer don't all fit on one line, put
+  each argument on its own line and indent
+\end{itemize}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# ggplot(aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +}
+\CommentTok{#   geom_point() +}
+\CommentTok{#   labs(}
+\CommentTok{#     x = "Sepal width, in cm",}
+\CommentTok{#     y = "Sepal length, in cm",}
+\CommentTok{#     title = "Sepal length vs. width of irises"}
+\CommentTok{#   ) }
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# ggplot(aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +}
+\CommentTok{#   geom_point() +}
+\CommentTok{#   labs(x = "Sepal width, in cm", y = "Sepal length, in cm", title = "Sepal length vs. width of irises") }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  ggplot2 allows you to do data manipulation, such as filtering or
+  slicing, within the data argument. Avoid this, and instead do the data
+  manipulation in a pipeline before starting plotting.
+\end{itemize}
+
+\hypertarget{making-packages}{%
+\section{Making packages}\label{making-packages}}
+
+\hypertarget{files-1}{%
+\subsubsection{Files}\label{files-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  If a file contains a single function, give the file the same name as
+  the function.
+\item
+  If a file contains multiple related functions, give it a concise, but
+  evocative name.
+\end{itemize}
+
+\hypertarget{documentation}{%
+\subsubsection{Documentation}\label{documentation}}
+
+\begin{itemize}
+\tightlist
+\item
+  Use the first line of your function documentation to provide a concise
+  title that describes the function, dataset, or class. Titles should
+  use sentence case but not end with a full stop
+\item
+  Always indent with one space after \#'
+\item
+  For most tags, like @param, @seealso and @return, the text should be a
+  sentence, starting with a capital letter and ending with a full stop
+\end{itemize}
+
+\hypertarget{error-messages}{%
+\subsubsection{Error messages}\label{error-messages}}
+
+\begin{itemize}
+\tightlist
+\item
+  If the cause of the problem is clear, use ``must'' - clear cut causes
+  typically involve incorrect types or lengths.
+\item
+  If you cannot state what was expected, use ``can't''
+\item
+  The problem statement should use sentence case and end with a full
+  stop.
+\item
+  Use simple sentences layed out in a bullet list of ℹ and ✖ elements
+\item
+  Do your best to reveal the location, name, and/or content of the
+  troublesome component
+\item
+  If the list of issues might be long, make sure to truncate to only
+  show the first few
+\item
+  If the source of the error is clear and common, you may want to
+  provide a hint as to how to fix it. If UTF-8 is available, prefix with
+  ℹ. Hints should always end in a question mark.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# dplyr::filter(iris, Species = "setosa")}
+\CommentTok{# #> Error: Filter specifications must be named.}
+\CommentTok{# #> ℹ Did you mean `Species == "setosa"`?}
+\CommentTok{# }
+\CommentTok{# ggplot2::ggplot(ggplot2::aes())}
+\CommentTok{# #> Error: Can't plot data with class "uneval". }
+\CommentTok{# #> ℹ Did you accidentally provide the results of aes() to the `data` argument?}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Good hints are difficult to write because, as above, you want to avoid
+  steering users in the wrong direction. Generally, I avoid writing a
+  hint unless the problem is common, and you can easily find a common
+  pattern of incorrect usage
+\item
+  Errors should be written in sentence case, and should end in a full
+  stop
+\item
+  If you can detect multiple problems, list up to five. This allows the
+  user to fix multiple problems in a single pass without being
+  overwhelmed by many errors that may have the same source
+\end{itemize}
+
+\hypertarget{news}{%
+\subsubsection{News}\label{news}}
+
+\begin{itemize}
+\tightlist
+\item
+  Each user-facing change to a package should be accompanied by a bullet
+  in NEWS.md
+\item
+  Strive to place the name of the function as close to the beginning of
+  the bullet as possible
+\end{itemize}
+
+\textbf{Good}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# * `ggsave()` now uses full argument names to avoid partial match warning (#2355).}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Bad}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# * Fixed partial argument matches in `ggsave()` (#2355).}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Lines should be wrapped to 80 characters, and each bullet should end
+  in a full stop.\#
+\item
+  Frame bullets positively (i.e.~what now happens, not what used to
+  happen), and use the present tense.
+\end{itemize}
+
+\end{document}

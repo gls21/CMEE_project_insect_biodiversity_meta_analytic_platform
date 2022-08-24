@@ -1,0 +1,260 @@
+
+\documentclass[11pt]{article}
+
+\setlength{\parskip}{1.5em} % increase spacing between paragraphs
+
+\usepackage{natbib}
+\bibliographystyle{apalike}
+
+\usepackage[hidelinks]{hyperref} % include hyperlinks but no ugly boxes around them
+
+\usepackage[figurename=Figure]{caption} % change Fig. to Figure 
+\usepackage[labelfont=bf]{caption} % Put figure legends in bold
+\usepackage[labelsep=period]{caption} % Put . rather than : after Figure
+
+\usepackage{helvet} % use helvetica font 
+
+\usepackage{setspace}
+\onehalfspacing % 1.5 line spacing 
+%\setlength\bibitemsep{0.5\baselineskip} % add half a line separating each bibliography entry
+
+\usepackage{float} % for positioning figures and tables
+
+\usepackage[margin=1in]{geometry} % change margins (have to be at least 2cm)
+
+\usepackage{lineno} % package that does line numbering       
+
+\usepackage{graphicx} % use this package to include figures in document
+\graphicspath{ {images_and_figures/} } % this is the path to the directory where the images to be included are stored.
+
+\setcounter{secnumdepth}{0} % stops sections being numbered
+
+\title{\huge Developing an interactive platform for insect biodiversity meta-analyses using R Shiny}  
+
+\author{\huge Grace Skinner}
+
+\date{\huge August 2022}
+
+\begin{document}
+	
+	\begin{figure}
+		\centering
+		\begin{minipage}{0.45\textwidth}
+			\centering
+			\includegraphics[width=0.9\textwidth]{imperial_logo.png} % first figure
+		\end{minipage}\hfill
+		\begin{minipage}{0.45\textwidth}
+			\centering
+			\includegraphics[width=0.9\textwidth]{nhm_logo.png} % second figure
+		\end{minipage}
+	\end{figure}
+
+	\maketitle
+	\vspace*{\fill} % put the following text at the bottom of the page 
+	\noindent \begin{center} A thesis submitted in partial fulfilment of the requirements for the degree of Master of Science at Imperial College London. Submitted for the MSc in Computational Methods in Ecology and Evolution. \end{center}
+	
+	\clearpage
+	
+	
+	\tableofcontents
+	\addtocontents{toc}{~\hfill\textbf{Page}\par} % add "Page" above page numbers
+	
+	
+	\clearpage
+	
+	\linenumbers % start continuous line numbering
+	
+	\section{Declaration} % * removes the numbering of sections 
+		I declare that the following material is of my own work with the following acknowledgments. I was supervised by Dr Joe Millard and Professor Andy Purvis. Data was provided to me to enable me to develop the insect biodiversity meta-analytic platform. The data had been collected by Christina Raw, a research assistant at the Natural History Museum, as part of a ‘meta-meta-analysis’ to investigate the effect of agricultural systems on biodiversity. All coding for the app, and for testing the efficiency of the platform was done by me. I carried out user experience testing with a panel of testers from the lab I worked with the at Natural History Museum. I also demonstrated and discussed the platform with members of the GLiTRS project, a NERC-funded collaboration among multiple UK research institutions that aims to synthesise many lines of evidence relating to insect biodiversity change. 
+		
+		\noindent Word count: 5992
+
+
+	\clearpage 
+	
+	\section{Abstract}
+		Insects provide vital ecological services, contributing to global ecosystem health and food security, though their underrepresentation in research makes it difficult to assess whether insects parallel the declines seen in vertebrates. Insect biodiversity change is complex, with variation in trends attributed to geographic, temporal, and taxonomic factors, as well as choice of biodiversity metric. Untangling the effects of this variation requires synthesising information across the literature. The increasing use of meta-analyses facilitates ‘meta-meta-analysis’, the synthesis of multiple meta-analytic studies by combining their effect sizes. Here, I present a new interactive platform for running such meta-meta-analytic models of insect biodiversity change, built using R Shiny. Using data from a living review of meta-analyses, my platform enables users to interactively run custom models to investigate the effects of agricultural systems on biodiversity without the need to code in R. Outputted estimations of change are specific to the biodiversity metrics the user chooses to investigate. The design allows for the addition of new meta-analytic data, with the outputs then reactively updating to these changes. I outline a typical use of my platform, and how I tested its effectiveness. My insect biodiversity meta-analytic platform allows practitioners to take full advantage of the data we currently have, and will have in future, so evidence could be used to curtail the drivers of insect biodiversity loss. In future, my platform can be easily adapted to analyse other threats, investigate other variables, or repurposed for other means.
+
+
+	\clearpage 
+	
+	\section{Introduction}
+		Insects are the world’s most species-rich taxonomic group \citep{homburg2019have,cardoso2020scientists}, and perform many unique and overlapping ecological functions. Pollination by Hymenoptera, Lepidoptera, and Diptera strongly influences crop yields and profits \citep{habel2019mitigating}, with approximately three-quarters of crop species dependent on pollination to some extent \citep{klein2007importance}. Insects contribute to biological pest control, organic matter recycling, and constitute a major link in the food chain \citep{sanchez2019worldwide}. The loss of these services threatens global ecosystem health and food security \citep{potts2016safeguarding}, which is particularly apparent in the global south where reliance on insect pollinated crops is high \citep{dicks2021global}. 
+		
+		\noindent Despite their invaluable contributions, insects are underrepresented in long-term biodiversity studies compared to vertebrates \citep{outhwaite2020complex,wagner2021insect}. Even though 95\% of existing animal species are invertebrates, a review by \citet{titley2017scientific} found an even split between biodiversity papers reporting on vertebrates and invertebrates. Possible reasons for this include the viewing of insects as pests and disease vectors \citep{lawton1998biodiversity,milivcic2021insect}, difficulty in identifying individuals to species level, and issues monitoring populations given their inconspicuous nature and high annual variation \citep{fox2019insect}. The imbalance has improved, with a ten-fold increase in the number of insect decline papers between 2000 and 2010 \citep{eggleton2020state}, though the disparity between the one million insects described and the 5.5 million thought to exist \citep{stork2018many} means studies continue to suffer from data deficiency. Therefore, while we may be experiencing the sixth mass extinction in evolutionary history \citep{dirzo2014defaunation}, assessing the extent to which insects are affected proves difficult. 
+		
+		\noindent Although more long-term data is needed, current consensus is that insect decline warrants further study and action \citep{montgomery2020insect}. \citet{sanchez2019worldwide}'s speculation that 40\% of insect species could go extinct in the next few decades has been prominent in bringing the issue to the forefront, though fundamental issues—particularly their biased literature search strategy, vote-counting methodology, and unjustified global extrapolation of findings—have been discussed \citep{simmons2019worldwide,saunders2020moving}. A similarly alarming seasonal decline of 76\% of total flying insect biomass was observed in Germany \citep{hallmann2017more}. Nevertheless, some insect populations are stable or increasing \citep{boyes2019bucking,wagner2021insect} such as the 5.5\% increase in UK terrestrial insect occupancy (1970-2015) reported by \citet{outhwaite2020complex}. 
+		
+		\noindent A variety of reasons contribute to the contrasting results, one being geographical variation at multiple scales. For example, trends in carabids differed across the UK from 50\% declines in northern moorlands to 50\% increases in southern downlands \citep{brooks2012large}. Globally, most research has been largely restricted to human-dominated landscapes in Europe and North America. Recognising this, researchers have begun searching for biodiversity change elsewhere including the tropics \citep{lister2018climate,wagner2021insect} and the Arctic \citep{loboda2018declining,gillespie2020status}.    
+		
+		\noindent Conflicting results may also be due to temporal or taxonomic variation. \citet{ollerton2014extinctions} calculated that the highest extinction rates for British bees and flower-visiting wasps occurred in the 1920s to 1950s, likely coinciding with intensification of agricultural practice. Among taxa, \citet{biesmeijer2006parallel} found that bee richness decreased in 52\% of British cells, but found no significant changes for hoverflies in the same timescale. Additionally, the choice of biodiversity metric may impact conclusions as species richness can decrease without biomass decreasing, potentially explained by smaller species showing stronger declines than larger ones \citep{homburg2019have}. Likewise, using only biomass or abundance, as done by \citet{van2020meta}, can result in overlooking replacement of sensitive with tolerant species \citep{jahnig2021revisiting}. Overall, this variation indicates that caution must be taken when generalising results especially as temporal, taxonomic, or geographical distance increases.   
+		
+		\noindent An additional challenge is to understand the drivers of insect biodiversity change, which include land-use change, climate change, habitat loss, pollution, and invasive species \citep{cardoso2020scientists}. Of these, land-use—particularly agricultural expansion and intensification—has been widely discussed \citep{newbold2014global,newbold2016global,newbold2018widespread,seibold2019arthropod,gillespie2022landscape}. Natural habitats in the vicinity of agricultural land may experience inflated rates of insect decline through reduced dispersal ability in a fragmented habitat or increased pesticide exposure \citep{seibold2019arthropod}. Moreover, effects of land-use vary geographically and taxonomically. \citet{millard2021global} found pollinator species richness in non-tropical areas to be significantly higher in minimal-intensity cropland than primary vegetation, unlike the decrease observed in tropical regions. Among insect orders, \citet{engelhardt2022consistent} observed decreases in butterfly, but not grasshopper nor dragonfly habitat specialists. This variation is potentially due to land-use change disproportionately affecting butterflies because they possess a higher quantity of specialised taxa, the existence of which are associated with high quality habitats \citep{poniatowski2018patch}. 
+		
+		\noindent To untangle the trends and drivers of insect biodiversity change, we must synthesise information across the literature to provide scientists, media, and policymakers with the best available evidence. A necessary step in achieving this is collecting studies, as done by EntoGEM \citep{haddaway2020evidence,grames2022framework}, which maps relevant literature allowing easy identification of the distribution of evidence. Once sufficient data exists to test a hypothesis, several approaches are available for concluding across studies. Synthetic analyses, in which models are built on collated primary data, are the approach taken by papers that use PREDICTS \citep{hudson2017database}, a database designed to explore how biodiversity responds to land-use \citep{newbold2014global,gray2016local}. Alternatively, meta-analyses can be used to quantitatively summarise results across studies in a replicable process, answering pre-defined questions \citep{arnqvist1995meta,gurevitch2018meta}. Effect sizes are calculated from primary studies, weighted according to study size or some other proxy for the precision of each study’s findings, and then modelled statistically to estimate an overall effect size and an associated confidence measure. As increasing numbers of meta-analyses are completed, we can perform ‘meta-meta-analyses’, which I define as  the synthesis of multiple meta-analytic studies by combining their effect sizes. This approach enables further increases in estimation accuracy (through larger sample size) and increased chance of detecting variables that significantly influence effect size. 
+		
+		\noindent Subsequently, we must ensure synthetic analyses and meta-analyses do not remain static. This is the concept of a living review \citep{elliott2017living}, in which results are updated as new evidence becomes available, allowing decisions to be based upon the current body of evidence. The Metadataset website and its dynamic meta-analysis app enables users to browse a living database for relevant data—in the fields of invasive species and cover crops—and then perform a meta-analysis on that subset \citep{shackelford2021dynamic}. 
+		
+		\noindent Here, I present a new interactive platform for running meta-meta-analytic models of insect biodiversity change in response to anthropogenic threats, built using R Shiny \citep{chang2022shiny}. Estimations of change are specific to the user’s precise question of interest. As new meta-analyses are conducted, users can upload these results, with the figures then reactively updating to these changes. The platform is designed around insect biodiversity change, though repurposing it for other means is highly feasible.
+		
+		\noindent The creation of the insect biodiversity meta-analytic platform is motivated by the need to make best use of existing and future data, helping to improve our understanding of the challenging field of insect biodiversity change. The purpose aligns well to, and is planned to contribute towards, the GLobal Insect Threat-Response Synthesis (GLiTRS) project, a NERC-funded collaboration among multiple UK research institutions that aims to synthesise many lines of evidence relating to insect biodiversity change. In the short-term, the GLiTRS team is the target audience for the app though, in the longer term, I aspire that this platform can assist insect biodiversity practitioners in conveying key messages to decision makers and the public on how insect declines can be mitigated.
+		
+		\clearpage 
+		
+		\section{Methods}
+		The first section of the methods introduces each of the qualities—interactivity and reactivity, transparency, efficiency, and adaptability—that I wanted the insect biodiversity meta-analytic platform to have, and lays out how I designed and built the platform around them. The second describes the meta-analytic models of insect biodiversity change utilised in the development of the platform. The third explains how I assessed the extent to which the platform demonstrates the characteristics that I aimed to incorporate. 
+		
+		\subsection{Important characteristics for an insect biodiversity meta-analytic platform}
+		To achieve interactivity and reactivity, the platform must be engaging by allowing users to make decisions throughout their usage of the platform, responding to these choices, and updating upon addition of new data. By allowing users to interact with the data, models, and their corresponding outputs, the tool is more use than an individual primary paper, or even a published meta-analysis that presents specific analyses run by the researchers, but which cannot be explored. Interactivity is a core feature of my meta-analytic platform, with its main function allowing users to run models of interest to investigate the effect of agricultural systems on biodiversity. Currently, the user can filter the data to be included in the model based on the biodiversity metric used to collect it, with the model then running in real-time. 
+		
+		\noindent The R Shiny package \citep{chang2022shiny} is ideal for building interactivity and reactivity into the platform due to its purpose of enabling the development of interactive web-based applications in R. Shiny was chosen to take advantage of the analytical and graphical capabilities of R familiar amongst conservation biologists and ecological entomologists \citep{lai2019evaluating}. It also removed the need to use HTML, CSS, or JavaScript often used for developing websites, though these can be used in Shiny apps for customisability of the user interface. The apps work well with databases and are easy to share with others—the user simply needs the web address of the Shiny app, or the code to replicate locally. I chose Shiny over the Python equivalent Dash \citep{hossain2019visualization} because it requires significantly less code than Dash to produce a comparable output, and because Python’s greater computational efficiency is not needed here. 
+		
+		\noindent The app is reactive to user choice by making use of the features provided by Shiny. Upon running a model, the user is presented with their results conveying the effects of agricultural systems on biodiversity. The user can then alter the figure to plot percentage change, which can be more intuitively understood than the log response ratio (LRR), converted using the formula
+		\begin{equation}
+		\mbox{Percentage change } = 100 * (e^{LRR} - 1). % need mbox to use text in equation
+		\end{equation}
+		\noindent In the case where the default model is run on all available data, there are additional options for user input including a choice of agricultural systems to plot, and whether to re-scale the x-axis as different agricultural systems are selected. The results are reactively filtered using dplyr and plotted using ggplot2, packages available from tidyverse \citep{wickham2019welcome}. 
+		
+		\noindent Additional interactivity and reactivity stem from the user ability to contribute to the platform by providing data from their own meta-analysis. To do so, the user must input their name, which must only contain letters, spaces, and hyphens to prevent code injection, where malicious executable input is entered and mistakenly run by the app. The file uploaded must be a file of comma-separated values to maintain compatibility with other data spreadsheets. It also must contain appropriate data for insect biodiversity meta-analyses such as the log response ratio and agricultural systems. Finally, it must not be a duplicate of a pre-existing dataset. Upon passing these checks run by the app, the user is presented with a preview of their dataset and can then upload it to remote storage. 
+		
+		\noindent The data is remotely stored within Google Sheets, from which it is read into the Shiny app using the googlesheets4 package \citep{bryan2020googlesheets4}. Each time the app is launched, all existing data stored, including any recently added data, is used by the models run within it. Remote storage is necessary due to local storage being insufficient in allowing access to data uploaded by previous users. If a user were to upload a file to the Shiny app, but not to remote storage, the file would only be only available locally, thus if a second user launches the app, they would not have access to this file. Google Sheets was chosen due to the long-lived access tokens available for authentication, compared to short-lived tokens which exist for Dropbox and its r2drop package \citep{ram2020rdrop2}. Google Sheets also provides a free basic storage plan, compared to the limited free usage options offered by Amazon S3. 
+		
+		\noindent I wanted to incorporate transparency into the platform by ensuring user awareness of the  origins of the data. The app provides details for all studies including the number of agricultural systems studied and total number of data points. Additionally, the user can choose papers for which they want a further breakdown of the agricultural systems studied. These features help the user gauge the size of analyses they conduct and highlight studies that may have a potentially influential effect. Using the maps package \citep{becker2021maps}, the user is also presented with a world map layered with data points for which coordinates are available.
+		
+		\noindent The outputs of the model are also designed to be transparent. A table displays coefficients extracted from the model and the frequency of instances for each agricultural system that the model is based on. Additionally, the user can choose to display descriptions of the agricultural systems and download the R model summary, or table of coefficients. If the model does not successfully run due to insufficient data, the user is prompted to select additional or alternative biodiversity metrics and re-run the model.
+		
+		\noindent For the platform to be useful, it needs to be efficient. This is mostly applicable to the time it takes to run a model, which should ideally take less than a minute since a user may run multiple models within a session. The process of uploading new data to the platform must also be efficient to encourage the usage of this feature and thus enable the platform to become increasingly useful as the database grows.
+		
+		\noindent Finally, the platform must be adaptable. Within the context of insect biodiversity change, a modular coding approach must be taken so the app’s functionality can be extended. For example, it must be easy to add data filters such as location or taxonomic group in addition to biodiversity metric. On a wider scale, the code needs to be written so it could be reused if the platform was repurposed for other fields.   
+		
+		\subsection{Leveraging meta-analytic models of insect biodiversity change}     
+		I prototyped the app using data collected for the purpose of conducting a meta-meta-analysis on the effect of agricultural systems on biodiversity, thus the data is composed of effects from separate meta-analyses. The data is useful in achieving the aim of assembling a platform for insect biodiversity meta-analyses, though in itself is not the main focus of the project. Not every meta-analytic study included was exclusively focused on insects: plants, fungi, and bacteria are also represented in the data. At this stage in development, I do not view this as an issue because once sufficient insect data is available, non-insect data can be filtered out.
+		
+		\noindent The user can run a default or custom model. The default model uses all available data whereas a custom model uses data filtered based on user choice of biodiversity metric. The models are robust linear mixed-effects models, fitted using robustlmm::rlmer \citep{koller2016robustlmm}. This model was chosen due to its ability to handle variation and outliers in data, giving better fits than linear mixed-effects models fitted with lme4 \citep{bates2014fitting}. Additionally, robust models are employed over metafor models \citep{viechtbauer2010conducting} (routinely utilised in meta-analysis) as the meta-analytic studies in the data underpinning the app—like many of the data available to the GLiTRS project overall—insufficiently reported statistics such as variance necessary for metafor.
+		
+		\noindent The model compares biodiversity of agricultural systems to the reference conventional agricultural system in terms of the log response ratio (LRR), a popular effect size in ecological meta-analyses due to its ability to quantify proportionate change between treatments \citep{hedges1999meta}. The model is fitted using the formula
+		\begin{equation}
+		\mbox{LRR } \sim \mbox{Agricultural system } + (1|\mbox{Paper identification}) + (1|\mbox{Contol agricultural system}),
+		\end{equation}
+		\noindent where ‘Agricultural system’ is a fixed effect and ‘Paper identification’ and ‘Control agricultural system’ are random intercepts, accounting for the non-independence of the data. Control agricultural system is included due to the log response ratio partly depending on the baseline agricultural system to which the treatment agricultural system is compared. 
+		
+		\noindent The log response ratio was chosen over the standardised mean difference because it is more robust to non-independence \citep{noble2017nonindependence}. Non-independence results in the standard deviation being lower than that of a dataset with independent data points. As the standardised mean difference, but not the log response ratio, is calculated using standard deviation it is therefore more affected by non-independence. The logarithm of the response ratio is taken to ensure symmetry between positive and negative change \citep{hedges1999meta}. For example, if one study found insect biodiversity doubled in response to switching to an organic agricultural system (two times the biodiversity), but another found it halved (0.5 times the biodiversity), in a meta-analysis these combine to give a conclusion of no effect, which succeeds if the natural logarithms are taken. Without doing so, the average calculates to 1.25. 
+		
+		\subsection{Assessing the characteristics of the insect biodiversity meta-analytic platform }
+		To assess the effectiveness of the platform, I evaluated whether the characteristics I aimed the platform to possess had been successfully incorporated. The reactivity of the platform is tested by assessing the extent to which results differ between models. I compare the outputs of two custom models run using the app—one with data collected using biomass as a biodiversity metric, and another with data collected using diversity as a biodiversity metric. The reasoning behind this comparison is due to the impact of biodiversity metric choice on conclusions \citep{hillebrand2018biodiversity}. For example, a decrease in biomass does not necessarily equate to a decrease in species richness \citep{jahnig2021revisiting}. 
+		
+		\noindent To measure the efficiency of the platform, I ran a sequence of 10 models with increasing numbers of rows of data (between 30 and 646) using the app. The number of rows was determined by the amount of data available for the combinations of biodiversity metrics chosen. The time taken to produce the outputs was recorded using the proc.time function \citep{team2013r}. Each model was run 10 times, and a mean running time calculated. The number of repeats was constrained by available time but was deemed sufficient due to limited variation between measurements. The same approach was used to test uploading data with a set of files of increasing size (from 59 KB to 563 KB). The data currently used by the platform is 383 KB, hence this range of files sizes covers the expected size of new data uploads. To complete this assessment, I recorded the time taken to upload data to the Shiny app (local), and to Google Sheets (remote). 
+		
+		\noindent In addition to these quantitative tests, I conducted qualitative user experience research with a panel of testers from the Purvis lab at the Natural History Museum by observing their usage of the platform, and recording their feedback. Furthermore, I received feedback from members of the GLiTRS project team via live demonstration of the app.
+		
+		\noindent The Shiny app presented here was built using the shiny R package version 1.7.1 \citep{chang2022shiny} within R version 4.2.0 \citep{team2013r}, which was also used to test the efficiency of the insect biodiversity meta-analytic platform. The app was deployed on the shinyapps.io service via the rsconnect package \citep{atkins2019rsconnect}. The shinyapps.io service is free and ideal for app development given its ease of use and rapidity. The app is available at \url{https://r26dnk-grace-skinner.shinyapps.io/meta_meta_analysis/}. 
+		
+		\clearpage 
+		
+		\section{Results}
+		\subsection{Typical use of the insect biodiversity meta-analytic platform} 
+		The process of a typical use of the insect biodiversity meta-analytic platform is summarised in Figure 1. Upon opening the app, the user is presented with an ‘Introduction’ tab providing information on data sources used within the app, such as details on number of agricultural systems studied and total number of data points supplied by each paper (Figure 2). The user can select a paper for which they wish to see a breakdown of the agricultural systems studied and view a world map to gauge the geographical representativeness of the data. Currently, 58 out of 676 data points have geographic coordinates available.
+		
+		\begin{figure}[H] 
+			\centering 
+			\includegraphics[scale=0.5]{figure_1_app_usage_flow_diagram.png} 
+			\caption{Flow diagram summarising a typical use of the insect biodiversity meta-analytic platform to run meta-meta-analytic models and upload a new data set.}  
+		\end{figure}
+		
+		\begin{figure}[H] 
+			\centering 
+			\includegraphics[scale=0.75]{figure_2_paper_details_table.png} 
+			\caption{Screenshot of a table included in the ‘Introduction’ tab of the insect biodiversity meta-analytic platform which gives information on the number of agricultural systems studied, and the total number of data points provided by each study used within the app. For full paper details, the user can go to the ‘References’ tab.}  
+		\end{figure}
+		
+		\noindent To investigate how different agricultural systems impact biodiversity, the user can navigate to the ‘Agricultural systems models’ tab. The user can click ‘Run default model’ to run a model on all available data and view the results in graphical and tabular form. They can also choose to plot specific agricultural systems and plot percentage change instead of the log response ratio, with the figures and tables updating in response. Finally, the user can view definitions of the agricultural systems and download the R model summary and table of results if they wish to locally store them. After studying the default model output, the user may decide to run their own custom model based on their specific choice of question. The app allows the user to filter the data based on the biodiversity metric it was collected with. 
+		
+		\noindent Following exploration with the platform, the user may decide to conduct their own meta-analysis off the platform. Once completed, they can return to the platform and upload their data for future users. In the ‘Upload data’ tab (Figure 3), the user can locally upload a file using the ‘Browse’ button , and view a preview upon completion of checks. They can then click the ‘Upload to database’ button to upload the data to the remote storage database. If the user wishes to run models including their data, they can refresh the app and re-run the models.
+		
+		\begin{figure}[H] 
+			\centering 
+			\includegraphics[scale=0.55]{figure_3_upload_data_screenshot.png} 
+			\caption{Screenshot of a section of the ‘Upload data’ tab in the insect biodiversity meta-analytic platform which shows the process of uploading a new meta-analytic data set. The user enters their name, then uploads the data locally to the Shiny app to views a preview and make sure the data passes some checks. Next, the user uploads the data set to the remote storage database and receives a success message.}  
+		\end{figure}
+		
+		\subsection{Assessing the characteristics of the insect biodiversity meta-analytic platform}
+		I tested the reactivity of the platform by comparing the results of a custom model run on data collected using biomass as a biodiversity metric, and a custom model run on data collected using diversity as a biodiversity metric (Figure 4). The sustainable agricultural system had the largest positive effect on biodiversity compared to the conventional agricultural system in both biomass (log response ratio = 0.83, t = 4.88, but note this is based on one data point for sustainable agricultural system) and diversity (log response ratio = 0.56, t = 32.26, sustainable agricultural system data points = 8) models.
+		
+		\noindent The mixed agricultural system was not significantly different from the conventional agricultural system in the biomass model results (log response ratio = 0.30, t = 0.70, mixed agricultural system data points = 16), but did have slightly more biodiversity than the conventional agricultural system in the diversity model results (log response ratio = 0.05, t = 2.05, mixed agricultural system data points = 35). Traditional, conservation, and sustainable agricultural systems all had significantly more biodiversity than the conventional agricultural system in both models, though these differences were smaller in the diversity model. For the conservation agricultural system, the log response ratio was 0.27 in the diversity model (t = 15.09, conservation agricultural system data points = 26), and 0.62 in the biomass model (t = 17.23, conservation agricultural system data points = 32). 
+		
+		\begin{figure}[H] 
+			\centering 
+			\includegraphics[scale=1]{figure_4_diversity_vs_biomass_models.png} 
+			\caption{Screenshots taken from the ‘Agricultural systems models’ tab in the insect biodiversity meta-analytic platform displaying the outputs of (a) a custom model run on data collected using biomass as a biodiversity metric, and (b) a custom model run on data collected using diversity as a biodiversity metric. The figures compare the biodiversity in terms of the log response ratio across different agricultural systems compared to conventional agricultural system (blue dashed line). Significance is indicated by blue stars (absolute t-value greater than 1.96).}  
+		\end{figure}
+		
+		\noindent To assess the efficiency of the meta-analytic app, I timed the fitting of models and the uploading of new data, with results generated with an internet upload speed of 94 Mbps. For efficiency of model fitting, as the number of rows of data increased, so did the time to fit the model (Figure 5). For uploading new data, as file size increased, the time to upload locally to the Shiny app did not increase (Figure 6). Contrastingly, the time to upload the same files to Google Sheets remote storage increased linearly with file size. For a file of size 172 KB, the time to upload locally to the Shiny app and the time to upload remotely to Google Sheets was approximately equal. Multiple independent testers gave feedback that they were satisfied with the speed of completing these tasks.  
+		
+		\begin{figure}[H] 
+			\centering 
+			\includegraphics[scale=1]{figure_5_model_time_graph.png} 
+			\caption{Mean time (seconds) to fit a robust linear mixed-effects model as a function of the number of rows of data. The model assessed the effect of agricultural systems on biodiversity in terms of the log response ratio. Error bars represent standard error of the mean.}  
+		\end{figure}
+		
+		\begin{figure}[H] 
+			\centering 
+			\includegraphics[scale=1]{figure_6_upload_data_time_graph.png} 
+			\caption{Mean time (seconds) to upload a meta-analytic data set locally to the Shiny app (back points) and remotely to Google Sheets (blue points) as a function of file size (KB). Error bars represent standard error of the mean.}  
+		\end{figure}
+		
+		\clearpage
+		
+		\section{Discussion}
+		The Shiny app introduced here represents a platform suitable for building a living review of insect biodiversity meta-analytic data. Using a growing evidence base, the platform enables interactive models to be run based on user choice of question, improving our knowledge of insect biodiversity change drivers, which research to date has striven to achieve, but failed to fully understand. Although the app was designed to investigate insect biodiversity change, it has potential application in other fields, especially where the data shows high heterogeneity, since the platform can be used to investigate specific combination of variables. The app is coded for easy adaption to analyse other databases as outputs are dependent upon inputs. For example, the biodiversity metric choices are not static, but dependent upon the unique categories present in the data set, thus if new data contained a new category, this would become an available option.  
+		
+		\noindent As shown through the testing of the reactivity of the platform, the biodiversity metrics chosen influence the results, demonstrating the value of a platform in which the user can model and visualise the data interactively and reactively. Biodiversity metric is an important user choice variable since observed declines in one metric do not necessarily correspond to equivalent declines in another \citep{hillebrand2018biodiversity}. For example, \citet{homburg2019have} only found declines in carabid species richness—but not biomass or abundance—implying the loss of smaller, rarer species led to a significant effect on species richness, but not biomass nor abundance. 
+		
+		\noindent My insect biodiversity meta-analytic platform is efficient for running models and uploading data. A model with 646 rows of data took a mean time of 24.1 seconds to run, and a data set of size 563 KB took a mean time of 3.8 seconds to upload locally to the Shiny app and 9.8 seconds to upload remotely to Google Sheets. All under a minute, these times are reasonable according to the panel of user experience testers.
+		
+		\subsection{Comparison of the insect biodiversity meta-analytic platform to existing tools}
+		The current platform most similar to the insect biodiversity meta-analytic platform is an app called dynamic meta-analysis, created alongside the Metadataset website \citep{shackelford2021dynamic}. After choosing an intervention in the dynamic meta-analysis Shiny app, the user can perform sub-group analyses in a similar manner to the Shiny app introduced here where custom results are based on a filtered subset of data. However, dynamic meta-analysis uses the rma.mv function from the metafor package \citep{viechtbauer2010conducting}, taking one or more effect sizes and corresponding variances calculated from each primary study as an input. By contrast, the insect biodiversity meta-analytic platform runs robust models from the robustlmm package \citep{koller2016robustlmm}, which can use multiple effect sizes from primary studies included in each meta-analysis study. The insect biodiversity meta-analytic platform is unable to use metafor due to the meta-analysis studies not reporting the necessary statistics (including variance) needed. Nevertheless, the robust models are an equally good alterative considering their ability to account for variation and outliers. 
+		
+		\noindent At this stage, the dynamic meta-analysis app \citep{shackelford2021dynamic} provides users with more filters and options to analyse the data than my new platform. For example, it provides the option of meta-regression where different subsets are analysed whilst accounting for effects of other variables. This approach is considered more powerful than sub-group analysis since the model includes all data and controls for variation that may be driven independent of fixed effects. For my insect biodiversity meta-analysis platform, which uses mixed effects models, additional variables such as latitude could be included as covariates to test for differences in model coefficients. 
+		
+		\noindent The dynamic meta-analysis app remains a work in progress. The usage example discussed in \citet{shackelford2021dynamic} is not replicable as it describes a different version of the app to the one currently available for public use. However, anyone can use my insect biodiversity meta-analytic platform using the web address of the app and following the process outlined in the results section. Additionally, the stand-out feature of my insect biodiversity meta-analytic platform is the ability of the user to upload their own data directly from within the app. This attribute will allow the app to grow through the addition of data by its users, rendering it increasingly useful in the future with minimal input from me, the initial platform developer. 
+		
+		\subsection{Limitations}
+		The app is limited by the quantity and quality of available data, though the issue of quantity will reduce as more studies are added. Deficiencies in the quality—particularly the reporting of statistics such as variance necessary to complete meta-analyses with metafor \citep{viechtbauer2010conducting}—have been highlighted \citep{hedges1999meta,stewart2010meta,gurevitch2018meta}. However, the robust model approach taken by the insect biodiversity meta-analytic platform is less susceptible to this due to it not depending on the reporting of these statistics. 
+		
+		\noindent The results of the efficiency tests confirm the platform is sufficient for its purpose in its current state. However, methods will need to be implemented to allow the app to remain efficient as increasing numbers of users run models simultaneously. This could be achieved by deploying the insect biodiversity meta-analytic app using a service such as ShinyProxy \citep{open2022shiny} instead of shinyapps.io, which has limitations on usage hours, and multiple users often share the same R process. Thus, users cannot run models simultaneously, increasing model run time, and ultimately limiting the number of users that can reasonably use the app at any one time. ShinyProxy overcomes these issues by providing a separate session for each user, thus serving multiple users without a reduction in modelling speed. ShinyProxy is open-source, though it requires more effort to deploy a Shiny app using this service than shinyapps.io, and additionally requires knowledge of docker containers, which is beyond the scope of this thesis.
+		
+		\noindent Furthermore, the insect biodiversity meta-analytic platform needs to remain efficient, continuing to run models in less than a minute as more data is uploaded. Part of this will require a move away from using Google Sheets as the database—more accurately defined as a spreadsheet program—and instead use a relational database, which has greater capacity, security, and speed, especially when multiple users are accessing the database. Larger data sets also increase the time taken to run robust models. Nevertheless, it becomes less necessary to run a robust model as the size of the data set increases due to variation and outliers becoming less influential. Therefore, the user would benefit if the platform was coded to run a standard linear mixed-effects model when the amount of data meets a threshold that confidently exceeds the requirement for running a robust model. Alternatively, the user could be given the choice of which model to run.  
+		
+		\subsection{Future work}
+		The custom model that can be run by the user is currently based on choice of biodiversity metric. I plan to expand the range of variables a user can choose as more data is uploaded. At present, filtering by multiple variables would likely result in limited data quantity, reducing the chance that a model successfully runs. Ultimately, including a choice of sampling location, taxonomic group studied, and date of sampling would be ideal for investigating geographic, taxonomic, and temporal variation in results. This proves especially difficult with the current dataset due to the majority of data points not reporting these variables, as well as inconsistent location descriptions; some studies report multiple continents, others individual countries. It also means the map included in the ‘Introduction’ tab underestimates the geographic representativeness of the insect biodiversity meta-analytic platform. 
+		
+		\noindent Based on feedback from the user experience testing, I also intend to expand the range of threats that the meta-analytic platform can be used to analyse, making it more useful. In addition to investigating agricultural systems, the user will have the choice to analyse the influence of other variables on biodiversity such as land-use and intensity, climate variables, or species traits. Land-use \citep{newbold2016global,seibold2019arthropod,gillespie2022landscape} and climate change \citep{deutsch2008impacts,lister2018climate,engelhardt2022consistent} have been commonly reported to impact insect biodiversity. For species traits, declines are more frequently reported in species which are rare \citep{powney2019widespread,outhwaite2020complex}, habitat or dietary specialists \citep{biesmeijer2006parallel,boyes2019bucking,wagner2021window}, small \citep{homburg2019have}, or poor dispersers \citep{cardoso2020scientists}. Therefore, including these variables in the insect biodiversity meta-analytic living body of evidence will provide an approach to untangling their effects. 
+		
+		\noindent In future, the insect biodiversity meta-analytic platform may need to be altered to prevent duplication of data at the level of primary literature. This may involve modifying the platform to accept primary literature, rather than calculated log response ratios. Duplicated data could then be easily identified and removed before the app performs the calculation of the log response ratios. This process relies upon future meta-analyses that will use a standardised protocol and data entry sheet. With these in place, the data requires less re-structuring before incorporation into the app and allows a smooth process for calculating the log response ratios. A protocol for the use of the insect biodiversity meta-analytic platform will also need to be assembled to avoid the issues of cherry picking, where users run multiple models but only report findings which support their hypotheses. 
+		
+		\subsection{Summary}
+		The insect biodiversity meta-analytic platform introduced here allows practitioners to take full advantage of both available and future data as further meta-analyses are conducted. With far-reaching applicability in other fields, the platform provides scientists with access to a living review database and the tools needed to analyse it without needing to code in R. This enables the complex patterns and drivers of insect biodiversity change to be disentangled, which can aid decision-making processes, indicate interesting findings worth investigating further, and highlight areas where research is lacking. The interactive, reactive, transparent, and efficient platform provides a simple, effective, and convincing approach to deliver evidence on how to curtail the drivers of insect biodiversity loss.  
+		
+		\clearpage 
+		
+		\section{Data and code availability}
+		The whole project repository (excluding data that cannot be made publicly available) can be accessed at LINK!!!. This includes the data collected, and code used, to assess the effectiveness of the app. The Shiny app is available at \url{https://r26dnk-grace-skinner.shinyapps.io/meta_meta_analysis/} and the code at \url{https://github.com/gls21/insect_biodiversity_meta_analytic_shiny_app}. 
+		
+		\noindent The data used to develop the insect biodiversity meta-analytic platform will be made publicly available at the time of publication of papers currently being written. Solely for the purpose of assessing this project, a copy of the data can be seen at \url{https://www.dropbox.com/s/5ywjja0q8maljsz/christina_mma.xlsx?dl=0} until Friday 30th September. 
+		
+		\subsection{Recreating the R Shiny app}
+		There are a number of steps to recreate and run this app on your computer. Firstly, you will need to download or clone the global.R, server.R, and ui.R files from the Shiny app repository link (as above), and additionally download the packages that are required (listed at the top of the global.R file). Secondly, you will need to request access to the files which store information needed for Google Sheets authentication, which is required by the Shiny app to read in the data used within the app. You can then click the ‘Run App’ button in R Studio, which will open the app in a browser on your computer.
+		
+		\clearpage
+		
+	\section{Acknowledgments}	
+		First and foremost I am extremely grateful for the support and advice provided throughout the project by my supervisors, Dr Joe Millard, and Professor Andy Purvis. A very big thank you goes to Christina Raw, whose data was used to develop the insect biodiversity meta-analytic platform, and who was always willing to discuss the project with me. I would also like to thank all the people who gave up their time to test the app, along with the rest of the lab I worked with at Natural History Museum for being so supportive and creating an ideal working environment, both online and in person. 
+	
+	\clearpage
+	
+	\addcontentsline{toc}{section}{References} % to include references in contents
+	\bibliography{project_report_bibliography_edited.bib}
+
+	
+	
+\end{document}

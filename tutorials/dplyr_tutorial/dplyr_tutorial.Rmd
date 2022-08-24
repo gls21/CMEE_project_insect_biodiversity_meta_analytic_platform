@@ -1,0 +1,260 @@
+---
+title: "dplyr tutorial"
+author: "Grace Skinner"
+date: "19/May/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+[Kaggle - Dive into dplyr website](https://www.kaggle.com/code/jessemostipak/dive-into-dplyr-tutorial-1/notebook) 
+
+<br> 
+
+### Intro
+
+* For cleaning and exploring data
+* Can feed manipulated data into ggplot2 package for visualization
+* Use the Palmer Penguins dataset, which I have downloaded 
+
+<br>
+
+### Set up our environment 
+
+Either load whole tidyverse package or the packages we're interested in 
+
+```{r}
+library(tidyverse)
+```
+<br>
+
+Conflicts are due to multiple packages using the same name for their functions. E.g. the filter() function from the dplyr package masks the filter() function from the stats package. To use the filter() function in the stats package, we will have to use stats::filter() syntax. 
+
+<br>
+
+### Import our data 
+
+```{r}
+penguins <- read_csv("penguins_size.csv")
+# The read_csv is a function in readr (package in tidyverse)
+# Don't worry about the text appearing being in red
+# Could equally just use the read.csv function 
+penguins
+```
+
+<br>
+
+# Check out our data
+
+```{r}
+# glimpse()
+# Includes dataframe structure, variables and their data type, and a look at the first few rows of each variable
+glimpse(penguins)
+
+# head()
+# Shows first few rows of dataframe
+# Good for seeing data is formatted consistently/correctly
+head(penguins)
+
+# summary()
+# summary statistics for the dataset
+# Can get idea of spread, or how much missing data there is
+summary(penguins)
+
+# names()
+# to get names of all variables in dataset
+names(penguins)
+
+```
+<br>
+
+### Exploring our data
+
+%>% is the pipe operator, which allows us to push our data through sequential functions. 
+
+<br>
+
+## filter()
+```{r}
+
+# Take the penguins dataset and then filter for all penguins that live on the Torgersen island
+penguins %>% 
+  filter(island == "Torgersen")
+
+penguins %>%
+  filter(island == "Torgersen") %>%
+  head()
+
+```
+<br>
+
+## arrange()
+* Arranges/organsises data in ascending order
+* Provide a single argument to the arrange() function
+```{r}
+
+# numeric data
+penguins %>%
+  arrange(culmen_length_mm) %>%
+  head()
+
+# character data
+penguins %>%
+  arrange(species)
+
+```
+
+<br>
+
+## Subset
+```{r}
+
+# creating a random subset of the penguins dataset
+set.seed(406)
+
+penguins_subset <- penguins %>%
+  sample_n(12)  # another dplyr function!
+
+penguins_subset
+
+penguins_subset %>%
+  arrange(species)
+
+# Can also nest desc() inside arrange() to get data in descending order
+# numeric data arranged in descending order
+penguins_subset %>%
+  arrange(desc(culmen_length_mm))
+
+# character data arranged in descending - reverse alphabetical - order
+penguins_subset %>%
+  arrange(desc(species))
+
+```
+
+
+<br>
+
+## More filtering 
+* Can use filter on single or multiple conditions
+```{r}
+
+# filter with a single numeric condition
+penguins_subset %>%
+  filter(culmen_depth_mm > 16.2)
+
+# filter with a single character condition
+penguins_subset %>%
+  filter(island == "Dream")
+
+# filter with a single numeric condition between two values
+penguins_subset %>%
+  filter(between(culmen_depth_mm, 16.2, 18.1))
+
+```
+
+<br>
+
+## select()
+* Pick which columns/variables we want to look at
+* Use it to pull a subset of variables, or rearrange order of variables 
+```{r}
+
+# selecting species, flipper_length_mm, and sex columns
+penguins_subset %>%
+  select(species, flipper_length_mm, sex)
+
+# selecting all character data
+penguins_subset %>%
+  select(where(is.character))
+
+# selecting all numeric data
+penguins_subset %>%
+  select(where(is.numeric))
+
+# selecting all character data by using "where not numeric" data
+penguins_subset %>%
+  select(!where(is.numeric))
+
+```
+
+<br>
+
+## mutate()
+* Can create new columns/variables
+* Works well with group_by()
+```{r}
+
+# converting grams to pounds
+# notice how the order of our columns stays the same, and the new column, body_weight_pounds, gets placed at the far right of the dataframe. 
+penguins_subset %>%
+  mutate(body_weight_pounds = body_mass_g / 453.59237)
+
+# Combining select and mutate
+penguins_subset %>%
+  mutate(body_weight_pounds = body_mass_g / 453.59237) %>%
+  select(everything()) # everything selects all variables 
+
+```
+
+<br>
+
+## summarise()
+* Can either use summarise() or summarize()
+* Useful to use with group_by()
+```{r}
+
+# summarising the average body mass of penguins, in grams
+penguins_subset %>%
+  summarise(avg_body_mass = mean(body_mass_g))
+
+# since we're now summarising our data we can go ahead and use the full dataframe, since the printout will be reasonably-sized
+penguins %>%
+  summarise(avg_body_mass = mean(body_mass_g))
+
+# This doesn't work very well due to NAs in the data!!!
+# For now we're going to use na.rm = TRUE, but you could use filter() from the dplyr package or drop_na() from the tidyr package as well!
+
+# summarising body mass on the entire penguins dataset while removing NA values from the calculation
+penguins %>%
+  summarise(avg_body_mass = mean(body_mass_g, na.rm = TRUE))
+
+# now let's use the grouping function, group_by(), to look at the average body mass of penguins, in grams, by species
+penguins %>%
+  group_by(species) %>%
+  summarise(avg_species_body_mass = mean(body_mass_g, na.rm = TRUE))
+
+# now let's calculate the average body mass by species AND island
+penguins %>%
+  group_by(species, island) %>%
+  summarise(avg_species_body_mass = mean(body_mass_g, na.rm = TRUE))
+
+```
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
